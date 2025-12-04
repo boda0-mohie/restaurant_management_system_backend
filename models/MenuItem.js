@@ -12,7 +12,11 @@ const menuItemSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  category: String,
+  category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
+    required: true,
+  },
   available: {
     type: Boolean,
     default: true,

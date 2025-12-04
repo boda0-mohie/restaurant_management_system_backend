@@ -3,7 +3,7 @@ const MenuItem = require("../models/MenuItem");
 // Get All Menu Items
 const getMenu = async (req, res) => {
   try {
-    const items = await MenuItem.find();
+    const items = await MenuItem.find().populate("category", "name");
     res.status(200).json(items);
   } catch (err) {
     res.status(500).json({ err: err.message });
@@ -48,7 +48,7 @@ const updateMenuItem = async (req, res) => {
   try {
     const item = await MenuItem.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
-    });
+    }).populate("category", "name");
     if (!item) return res.status(404).json({ message: "Item Not Found" });
     res.status(200).json(item);
   } catch (err) {

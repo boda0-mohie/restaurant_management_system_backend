@@ -4,6 +4,8 @@ const connectDB = require("./config/db")
 const menuRoutes = require("./routes/menuRoutes")
 const orderRoutes = require("./routes/orderRoutes")
 const authRoutes = require('./routes/authRoutes')
+const adminRoutes = require("./routes/adminRoutes")
+const categoryRoutes = require("./routes/categoryRoutes")
 
 dotenv.config();
 const app = express();
@@ -16,7 +18,9 @@ connectDB()
 
 
 app.use('/api/auth', authRoutes)
+app.use('/api/admin', adminRoutes )
 app.use('/api/menu', menuRoutes)
+app.use('/api/category', categoryRoutes)
 app.use('/api/orders', orderRoutes)
 
 
