@@ -11,7 +11,7 @@ const { protect, authorize } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-router.post("/", createOrder);
+router.post("/", protect, createOrder);
 router.get("/", protect, authorize("admin"), getOrders);
 router.get("/:id", protect, authorize("admin"), getOrderById);
 router.put("/:id/status", protect, validateStatusChange, updateOrderStatus);

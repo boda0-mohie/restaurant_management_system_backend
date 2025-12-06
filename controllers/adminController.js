@@ -1,4 +1,6 @@
 const User = require("../models/User");
+const Order = require("../models/Order");
+const MenuItem = require("../models/MenuItem");
 const bcrypt = require("bcrypt");
 
 // Get All Users
@@ -82,10 +84,53 @@ const createUserByAdmin = async (req, res) => {
   }
 };
 
+const getAdminDashboard = async (req, res) => {
+  try {
+    const totalUsers = await User.countDocuments();
+    const totalOrders = await Order.countDocuments();
+
+    const totalRevenue = await Order.aggregate([
+      { $group: { _id: null, revenue: { $sum: "$totalPrice" } } },
+    ]);
+
+    const lastOrders = await Order.find()
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .populate("items.menuItem");
+
+    const ordersByStatus = await Order.aggregate([
+      { $group: { _id: "$status", count: { $sum: 1 } } },
+    ]);
+
+    const topItems = await Order.aggregate([
+      { $unwind: "$items" },
+      {
+        $group: {
+          _id: "$items.menuItem",
+          quantity: { $sum: "$items.quantity" },
+        },
+      },
+      { $sort: { quantity: -1 } },
+      { $limit: 5 },
+    ]);
+
+    res.status(200).json({
+      totalUsers,
+      totalOrders,
+      totalRevenue: totalRevenue[0]?.revenue || 0,
+      ordersByStatus,
+      lastOrders,
+      topItems,
+    });
+  } catch (err) {
+    res.status(500).json({ err: err.message });
+  }
+};
 
 module.exports = {
   getAllUsers,
   updateUserRole,
   deleteUser,
   createUserByAdmin,
+  getAdminDashboard,
 };

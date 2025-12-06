@@ -11,7 +11,6 @@ const createOrder = async (req, res) => {
       return res.status(400).json({ message: "Order items required" });
     }
 
-    // Calculate total price
     let totalPrice = 0;
 
     for (let item of items) {
@@ -25,6 +24,7 @@ const createOrder = async (req, res) => {
     }
 
     const order = await Order.create({
+      user: req.user.id, 
       items,
       totalPrice,
     });
@@ -41,6 +41,7 @@ const createOrder = async (req, res) => {
     res.status(500).json({ err: err.message });
   }
 };
+
 
 // Get all orders
 const getOrders = async (req, res) => {
