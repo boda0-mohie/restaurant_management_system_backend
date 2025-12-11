@@ -36,6 +36,7 @@ const orderSchema = new mongoose.Schema({
       "on_the_way",
       "delivered",
       "completed",
+      "paid",
     ],
     default: "pending",
   },
